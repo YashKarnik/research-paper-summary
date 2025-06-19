@@ -1,0 +1,14 @@
+langchain
+python-dotenv
+ipykernel
+langchain-community
+langchain_ollama
+faiss-cpu
+pypdf
+langgraph
+duckduckgo-search
+pydantic
+fastapi
+uvicorn
+fastapi[standard]
+grandalf
