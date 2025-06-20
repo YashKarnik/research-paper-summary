@@ -1,0 +1,5 @@
+venv
+*.pdf
+.idea
+.vscode
+__pycache__

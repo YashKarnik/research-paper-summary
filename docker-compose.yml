@@ -1,0 +1,14 @@
+services:
+  research-paper-summary:
+    build: ./
+    environment:
+      - FILE_UPLOAD_PATH=/app/data/uploads
+      - INDEX_UPLOAD_PATH=/app/data/indexes
+
+    ports:
+      - 8000:8000
+    volumes:
+      - data:/app/data
+
+volumes:
+  data:
