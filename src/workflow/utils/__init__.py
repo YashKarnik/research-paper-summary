@@ -2,7 +2,7 @@ from typing import List
 
 from langchain_core.documents import Document
 from langchain_core.messages import BaseMessage
-from langchain_ollama import ChatOllama
+from langchain_ollama import ChatOllama, OllamaEmbeddings
 
 from src.workflow.state import AgentClass
 
@@ -12,6 +12,7 @@ def get_last_message(state: AgentClass) -> BaseMessage:
 
 
 base_llm_model = ChatOllama(model="gemma:2b")
+embedding_model = OllamaEmbeddings(model="nomic-embed-text:latest")
 
 
 def get_relevant_docs(documents: List[Document]):

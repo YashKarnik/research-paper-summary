@@ -25,14 +25,16 @@ def read_root(file: UploadFile):
     try:
         with open(AppConfig.get_file_upload_path(filename), 'wb') as f:
             f.write(contents)
+        vector_store = FaissVectorStore()
+        index_name = vector_store.load(filename)
+        return {"index_name": index_name}
     except IOError as e:
         print("ERR :(")
+        print(e)
     finally:
         file.file.close()
-
-    vector_store = FaissVectorStore()
-    index_name = vector_store.load(filename)
-    return {"index_name": index_name}
+    return {"Error":"Err"}
+    
 
 
 
@@ -53,4 +55,4 @@ def similarity_search(query: str = "", index_name: str = ""):
 
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="localhost", port=8000)
+    uvicorn.run("app:app", host="0.0.0.0", port=8000)

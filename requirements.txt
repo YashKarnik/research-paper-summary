@@ -11,4 +11,3 @@ pydantic
 fastapi
 uvicorn
 fastapi[standard]
-grandalf
