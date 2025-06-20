@@ -13,14 +13,14 @@ from src.workflow.state import AgentClass
 
 
 class GraphBuilder:
-    def __init__(self, vector_store: FaissVectorStore):
+    def __init__(self, vector_store: FaissVectorStore, index_name:str):
         # self._query: str = query
         self._vector_store: FaissVectorStore = vector_store
         self.graph_builder: StateGraph = None
         self.topic_generator = TopicGenerator(self._vector_store)
         self.get_user_topics = GetUserTopics()
         self.parse_and_format_topics = ParseAndFormatTopics()
-        self.worker = Worker(self._vector_store.get_vector_db())
+        self.worker = Worker(self._vector_store.get_local_vector_db(index_name))
         self.aggregator = Aggregator()
 
     def build(self) -> CompiledStateGraph:
