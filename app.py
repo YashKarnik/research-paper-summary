@@ -25,23 +25,22 @@ def read_root(file: UploadFile):
     try:
         with open(AppConfig.get_file_upload_path(filename), 'wb') as f:
             f.write(contents)
-        vector_store = FaissVectorStore()
-        index_name = vector_store.load(filename)
+        vector_store = FaissVectorStore().load_in_memory(filename)
+        index_name = vector_store.commit_to_disk()
         return {"index_name": index_name}
     except IOError as e:
         print("ERR :(")
         print(e)
     finally:
         file.file.close()
-    return {"Error":"Err"}
-    
-
+    return {"Error": "Err"}
 
 
 @app.post("/invoke")
 def read_item(query: str = "", index_name: str = ""):
     # graph = GraphB
-    graph_builder = GraphBuilder(FaissVectorStore(), index_name)
+    # index
+    graph_builder = GraphBuilder(FaissVectorStore().load_in_memory(index_name + ".pdf"), index_name)
     graph = graph_builder.build()
     result = graph.invoke({"messages": query})
     return {"result": result}

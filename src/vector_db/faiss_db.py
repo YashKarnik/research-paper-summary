@@ -13,19 +13,22 @@ from src.workflow.utils import get_relevant_docs, embedding_model
 class FaissVectorStore:
     def __init__(self):
         self._vector_database = None
-        self._relevant_docs = None
+        self._document_chunks = None
         self._document_path = None
         self._filename = None
 
-    def load(self, filename: str):
-        print("buildign vrcotr store")
+    def load_in_memory(self, filename: str):
+        print("building vector store")
         self._filename = filename
         self._document_path = AppConfig.get_file_upload_path(self._filename)
-        self._relevant_docs = self._fetch_documents()
+        self._document_chunks = self._chunk_documents()
         self._vector_database = self._initialize_vector_database()
+        return self
+
+    def commit_to_disk(self):
         return self._save_vector_database()
 
-    def _fetch_documents(self) -> List[Document]:
+    def _chunk_documents(self) -> List[Document]:
         pdf_loader = PyPDFLoader(self._document_path)
         documents = pdf_loader.load()
         pdf_text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
@@ -33,8 +36,7 @@ class FaissVectorStore:
         return get_relevant_docs(split_docs)
 
     def _initialize_vector_database(self) -> FAISS:
-        print(self._relevant_docs)
-        return FAISS.from_documents(documents=self._relevant_docs,
+        return FAISS.from_documents(documents=self._document_chunks,
                                     embedding=embedding_model)
 
     def _save_vector_database(self):
@@ -48,3 +50,7 @@ class FaissVectorStore:
         return FAISS.load_local(AppConfig.get_index_upload_path(vector_index_name),
                                 embeddings=embedding_model,
                                 allow_dangerous_deserialization=True)
+
+    def get_documents(self):
+        return self._document_chunks
+
